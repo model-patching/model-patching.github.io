@@ -7,6 +7,7 @@
 	<meta name="viewport" content="width=1096">
 	<link rel="stylesheet" href="assets/css/main.css" />
 	<link rel="shortcut icon" type="image/jpg" href="favicon.ico" />
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/charts.css/dist/charts.min.css">
 	<script>
 		(function (i, s, o, g, r, a, m) {
 			i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
@@ -69,7 +70,45 @@
 				<br>
 			</p>
 
+			<hr / style="margin-top: 1em">
 
+			<h3>Patching interactive demo!</h3>
+
+			<!-- <span class="image right" style="max-width: 40%; margin-top: 0.5em; margin-bottom: 0; border: 2px solid #415161;"> -->
+
+			<!-- <img src="http://vignette1.wikia.nocookie.net/seraphina/images/b/b2/Dragonseraphina.jpg/revision/latest?cb=20160103194957" height="200" width="200" alt="dragon"> -->
+			<!-- <script src="assets/js/jquery.min.js"></script>
+							<script src="assets/js/click_handling.js"></script> -->
+
+			<p>
+				Explore predictions for both a supported task (e.g., CIFAR-10) and a patching task (e.g., MNIST), by setting an interpolation factor &alpha; between 0 and 1.
+				When &alpha; = 0, we have the model &theta;<sub>0</sub>, which is the original open-vocabulary model (i.e., CLIP ViT-B/32).
+				When  &alpha; = 1, we have the model &theta;<sub>1</sub>, which is fully fine-tuned on MNIST.
+				<br>
+				<!-- <strong style="text-decoration: underline;">Select an image from the following drop down list:</strong> -->
+			</p>
+			<div class="custom-select"
+				style="margin-top: 0.5em; margin-bottom: 0; display: block; margin-left: auto; margin-right: auto; width:400px; text-align-last:center; ">
+
+				<div>&theta;<sub>patch</sub> = (1 - &alpha;) * &theta;<sub>0</sub> + &alpha; * &theta;<sub>1</sub>, where</div>
+
+				<span id="updatea"></span> <input type="range" min="0" max="100" value="0" id="t0" class="slider1" onchange="updateT0Input(this.value);">
+				<p>&alpha; = <span id="demo1"></span></p>
+				<script>
+					function updateT0Input(t0) {
+						document.getElementById("updatea").value = t0;
+					}
+
+					var slider1 = document.getElementById("t0");
+					var output1 = document.getElementById("demo1");
+					output1.innerHTML = slider1.value;
+
+					slider1.oninput = function() {
+						output1.innerHTML = this.value/100.;
+					}
+				</script>
+
+			</div>
 
 			<!-- <hr/ style="margin-top: 1em">
 						<h3>Highlights</h3>
@@ -156,46 +195,14 @@
 							</pre>
 				</div>
 			</div>
-			<hr / style="margin-top: 1em">
-			<!-- <div class="row">
-							<div class="12u$ 12u$(xsmall)" style="text-align: center;">
-		                    <video width="640"  playsinline="" muted="" autoplay="" loop="" >
-		                        <source src="images/videos/data_video_combined2.mp4" type="video/mp4">
-		                    </video>
-	                		</div >
-						</div> -->
+			<!-- <hr / style="margin-top: 1em"> -->
 
-			<div class="row">
+			<!-- <div class="row">
 				<div class="12u$ 12u$(xsmall)" style="text-align: center;">
 					<h3>Technical Summary Video (with audio)</h3>
-					<!-- <iframe width="640" height="360" src="https://www.youtube.com/embed/dNug1l-BcnM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> -->
+					<iframe width="640" height="360" src="https://www.youtube.com/embed/dNug1l-BcnM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 				</div>
-			</div>
-
-
-			<hr / style="margin-top: 1em">
-
-			<h3>Patching demo</h3>
-
-			<!-- <span class="image right" style="max-width: 40%; margin-top: 0.5em; margin-bottom: 0; border: 2px solid #415161;"> -->
-
-			<!-- <img src="http://vignette1.wikia.nocookie.net/seraphina/images/b/b2/Dragonseraphina.jpg/revision/latest?cb=20160103194957" height="200" width="200" alt="dragon"> -->
-			<!-- <script src="assets/js/jquery.min.js"></script>
-							<script src="assets/js/click_handling.js"></script> -->
-
-			<p>
-				TODO: short description of the demo
-				<br>
-				<!-- <strong style="text-decoration: underline;">Select an image from the following drop down list:</strong> -->
-			</p>
-			<div class="custom-select"
-				style="margin-top: 0.5em; margin-bottom: 0; display: block; margin-left: auto; margin-right: auto; width:400px; text-align-last:center; ">
-				<!-- <div>Choose a category:</div> -->
-				&alpha; interpolation value between 0 and 1
-				<div class="slidecontainer">
-					<input type="range" min="0" max="100" value="50" class="slider" id="myRange">
-				</div>
-			</div>
+			</div> -->
 
 			<hr / style="margin-top: 1em">
 			<h3>Acknowledgements</h3>
