@@ -27,6 +27,27 @@
 			-webkit-user-select: none;
 			-ms-user-select: none;
 		}
+
+		/* Create two equal columns that floats next to each other */
+		.column {
+			float: left;
+			width: 50%;
+			/* padding: 10px;
+			height: 300px; */
+			justify-content: center;
+			align-content: center;
+			/* Should be removed. Only for demonstration */
+		}
+
+		/* Clear floats after the columns */
+		.row:after {
+			content: "";
+			display: table;
+			clear: both;
+			align-content: center;
+			justify-content: center;
+			align-content: center;
+		}
 	</style>
 
 	<meta property="og:url" content="https://model-patching.github.io/" />
@@ -98,8 +119,8 @@
 				<br>
 				<!-- <strong style="text-decoration: underline;">Select an image from the following drop down list:</strong> -->
 			</p>
-			<div class="custom-select"
-				style="margin-top: 0.5em; margin-bottom: 0; display: block; margin-left: auto; margin-right: auto; width:400px; text-align-last:center; ">
+			<div
+				style="margin-top: 0.5em; margin-bottom: 0; display: block; margin-left: auto; margin-right: auto; text-align-last:center; ">
 
 				<div>&theta;<sub>patch</sub> = (1 - &alpha;) * &theta;<sub>0</sub> + &alpha; * &theta;<sub>1</sub>,
 					where</div>
@@ -107,135 +128,261 @@
 				<span id="updatea"></span> <input type="range" min="0" max="100" value="0" id="t0" class="slider1"
 					onchange="updateT0Input(this.value);">
 				<p>&alpha; = <span id="demo1"></span></p>
-				<script>
-					function updateT0Input(t0) {
-						document.getElementById("updatea").value = t0;
-					}
 
-					var slider1 = document.getElementById("t0");
-					var output1 = document.getElementById("demo1");
-					output1.innerHTML = slider1.value;
+				<div class="row">
+					<script>
+						window.onloadFuncs = [];
+						window.myHorizontalBars = [];
+						window.horizontalBarChartDatas = [];
 
-					slider1.oninput = function () {
-						output1.innerHTML = this.value / 100.;
-					}
-				</script>
-
-				<div id="container" style="width: 75%;"><iframe class="chartjs-hidden-iframe" tabindex="-1"
-						style="display: block; overflow: hidden; border: 0px; margin: 0px; inset: 0px; height: 100%; width: 100%; position: absolute; pointer-events: none; z-index: -1;"
-						src="./Horizontal Bar Chart_files/saved_resource.html"></iframe>
-					<canvas id="canvas" width="1038" height="1038"
-						style="display: block; height: 519px; width: 519px;"></canvas>
-				</div>
-
-				<script>
-					function updateT0Input(t0) {
-						document.getElementById("updatea").value = t0;
-					}
-
-					var slider1 = document.getElementById("t0");
-					var output1 = document.getElementById("demo1");
-					output1.innerHTML = slider1.value;
-
-					slider1.oninput = function () {
-						output1.innerHTML = this.value / 100.;
-					}
-
-					var MNIST = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
-					var CIFAR10 = ["airplane", "automobile", "bird", "cat", "deer", "dog", "frog", "horse", "ship", "truck"];
-					var color = Chart.helpers.color;
-					var horizontalBarChartData = {
-						labels: CIFAR10,
-						datasets: [{
-							label: 'Prediction: ',
-							backgroundColor: color(window.chartColors.yellow).alpha(0.5).rgbString(),
-							borderColor: window.chartColors.yellow,
-							borderWidth: 1,
-							data: [
-								0.05,
-								0.05,
-								0.05,
-								0.05,
-								0.05,
-								0.05,
-								0.05,
-								0.05,
-								0.05,
-								0.05,
-							]
-						}]
-
-					};
-
-					window.onload = function () {
-						var ctx = document.getElementById("canvas").getContext("2d");
-						window.myHorizontalBar = new Chart(ctx, {
-							type: 'horizontalBar',
-							data: horizontalBarChartData,
-							options: {
-								// Elements options apply to all of the options unless overridden in a dataset
-								// In this case, we are setting the border of each horizontal bar to be 2px wide
-								elements: {
-									rectangle: {
-										borderWidth: 2,
-									}
-								},
-								responsive: true,
-								legend: {
-									display: false,
-									position: 'right',
-								},
-								title: {
-									display: false,
-									text: 'Predictions'
-								},
-								scales: {
-									xAxes: [{
-										display: true,
-										ticks: {
-											min: 0, // minimum value
-											max: 1,
-											stepSize: 0.5 // maximum value
-										}
-									}]
-								}
+						window.onload = function () {
+							for (var i in this.onloadFuncs) {
+								this.onloadFuncs[i]();
 							}
-						});
+						}
 
-					};
+						var color = Chart.helpers.color;
 
-					document.getElementById('t0').addEventListener('input', function () {
-						key = document.getElementById('t0').value;
-						var zero = Math.random() < 0.2 ? true : false;
-						horizontalBarChartData.datasets.forEach(function (dataset) {
-							dataset.data = dataset.data.map(function () {
-								return key / 100.;
-							});
+						window.onload = function () {
+							for (let i = 0; i < 6; i++) {
 
-						});
-						window.myHorizontalBar.update();
-					});
+								var ctx = document.getElementById("canvas" + String(i + 1)).getContext("2d");
 
-					var colorNames = Object.keys(window.chartColors);
+								var horizontalBarChartData = {
+									labels: ["plane", "car", "bird", "cat", "deer", "dog", "frog", "horse", "ship", "truck"], // labels,
+									datasets: [{
+										label: 'Prediction: ',
+										backgroundColor: color(window.chartColors.yellow).alpha(0.5).rgbString(),
+										borderColor: window.chartColors.yellow, // window.chartColors.yellow,
+										borderWidth: 1,
+										data: [
+											0.05,
+											0.05,
+											0.05,
+											0.05,
+											0.05,
+											0.05,
+											0.05,
+											0.05,
+											0.05,
+											0.05,
+										]
+									}]
 
-				</script>
+								};
+								if (i > 2) {
+									horizontalBarChartData = {
+										labels: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"], // labels,
+										datasets: [{
+											label: 'Prediction: ',
+											backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
+											borderColor: window.chartColors.red, // window.chartColors.yellow,
+											borderWidth: 1,
+											data: [
+												0.05,
+												0.05,
+												0.05,
+												0.05,
+												0.05,
+												0.05,
+												0.05,
+												0.05,
+												0.05,
+												0.05,
+											]
+										}]
 
+									};
+								}
+
+								window.horizontalBarChartDatas.push(horizontalBarChartData)
+
+								window.myHorizontalBars.push(new Chart(ctx, {
+									type: 'horizontalBar',
+									data: window.horizontalBarChartDatas[i],
+									options: {
+										// Elements options apply to all of the options unless overridden in a dataset
+										// In this case, we are setting the border of each horizontal bar to be 2px wide
+										elements: {
+											rectangle: {
+												borderWidth: 2,
+											}
+										},
+										responsive: false,
+										legend: {
+											display: false,
+											position: 'right',
+										},
+										title: {
+											display: false,
+											text: 'Predictions'
+										},
+										scales: {
+											xAxes: [{
+												display: true,
+												ticks: {
+													min: 0, // minimum value
+													max: 1,
+													stepSize: 0.5 // maximum value
+												}
+											}]
+										}
+									}
+								}));
+							};
+						};
+
+						// window.onload = function () {
+						// 	for (var i in this.onloadFuncs) {
+						// 		this.onloadFuncs[i]();
+						// 	}
+						// }
+
+						function updateT0Input(t0) {
+							document.getElementById("updatea").value = t0;
+						}
+
+						var slider1 = document.getElementById("t0");
+						var output1 = document.getElementById("demo1");
+						output1.innerHTML = slider1.value;
+
+						slider1.oninput = function () {
+							output1.innerHTML = this.value / 100.;
+						}
+
+						class Graph {
+							constructor(name, my_color, i) {
+								var labels = ''
+								if (name.includes('CIFAR')) {
+									labels = ["plane", "car", "bird", "cat", "deer", "dog", "frog", "horse", "ship", "truck"];
+								}
+								else {
+									labels = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+								}
+								function updateT0Input(t0) {
+									document.getElementById("updatea").value = t0;
+								}
+
+								var slider1 = document.getElementById("t0");
+								var output1 = document.getElementById("demo1");
+								output1.innerHTML = slider1.value;
+
+								slider1.oninput = function () {
+									output1.innerHTML = this.value / 100.;
+								}
+
+								var color = Chart.helpers.color;
+
+								document.getElementById('t0').addEventListener('input', function () {
+									var key = document.getElementById('t0').value;
+									horizontalBarChartDatas[i].datasets.forEach(function (dataset) {
+										dataset.data = dataset.data.map(function () {
+											return key / 100.;
+										});
+
+									});
+									window.myHorizontalBars[i].update();
+								});
+
+								var colorNames = Object.keys(window.chartColors);
+							}
+						}
+
+					</script>
+
+					<table BORDER=”0″">
+						<tr>
+							<th colspan="2">Supported task examples (CIFAR-10)</th>
+							<th colspan="2">Patching task examples (MNIST)</th>
+						</tr>
+						<tr>
+							<td>Input</td>
+							<td>&theta;<sub>patch</sub> predictions</td>
+							<td>Input</td>
+							<td>&theta;<sub>patch</sub> predictions</td>
+						</tr>
+						<tr>
+							<td><img src="images/tmp.png" width="224" height="224" /></td>
+							<td>
+								<div>
+									<canvas id="canvas1" width="300" height="224"
+										style="margin-bottom: 0; display: block; margin-left: auto; margin-right: auto; text-align-last:center;"></canvas>
+									<script>
+										new Graph("CIFAR", window.chartColors.yellow, 0);
+									</script>
+								</div>
+							</td>
+							<td><img src="images/tmp.png" width="224" height="224" /></td>
+							<td>
+								<div>
+									<canvas id="canvas4" width="300" height="224"
+										style="margin-bottom: 0; display: block; margin-left: auto; margin-right: auto; text-align-last:center;"></canvas>
+									<script>
+										new Graph("MNIST", window.chartColors.red, 3);
+									</script>
+								</div>
+							</td>
+						</tr>
+
+						<tr>
+							<td><img src="images/tmp.png" width="224" height="224" /></td>
+							<td>
+								<div>
+									<canvas id="canvas2" width="300" height="224"
+										style="margin-bottom: 0; display: block; margin-left: auto; margin-right: auto; text-align-last:center;"></canvas>
+									<script>
+										new Graph("CIFAR", window.chartColors.yellow, 1);
+									</script>
+								</div>
+							</td>
+							<td><img src="images/tmp.png" width="224" height="224" /></td>
+							<td>
+								<div>
+									<canvas id="canvas5" width="300" height="224"
+										style="margin-bottom: 0; display: block; margin-left: auto; margin-right: auto; text-align-last:center;"></canvas>
+									<script>
+										new Graph("MNIST", window.chartColors.red, 4);
+									</script>
+								</div>
+							</td>
+						</tr>
+
+						<tr>
+							<td><img src="images/tmp.png" width="224" height="224" /></td>
+							<td>
+								<div>
+									<canvas id="canvas3" width="300" height="224"
+										style="margin-bottom: 0; display: block; margin-left: auto; margin-right: auto; text-align-last:center;"></canvas>
+									<script>
+										new Graph("CIFAR", window.chartColors.yellow, 2);
+									</script>
+								</div>
+							</td>
+							<td><img src="images/tmp.png" width="224" height="224" /></td>
+							<td>
+								<div>
+									<canvas id="canvas6" width="300" height="224"
+										style="margin-bottom: 0; display: block; margin-left: auto; margin-right: auto; text-align-last:center;"></canvas>
+									<script>
+										new Graph("MNIST", window.chartColors.red, 5);
+									</script>
+								</div>
+							</td>
+						</tr>
+
+
+					</table>
+
+
+				</div>
 			</div>
 
-			<!-- <hr/ style="margin-top: 1em">
-						<h3>Highlights</h3>
-
-						<section>
-							<div class="box alt" style="margin-bottom: 0em;">
-
-								<div class="row 50% uniform" style="width: 100%;">
-									<div class="3u" style="margin-top: -5em; font-size: 0.7em; line-height: 1.5em; text-align: center;"><a href="https://ai.googleblog.com/2019/03/unifying-physics-and-deep-learning-with.html"><span class="image fit" style="margin-bottom: 0.5em;"><img src="images/logo-GoogleAI.png" alt="" style="height: 19em; width: auto;" /></span></a></div>
-									<div class="3u" style="margin-left: 3em; margin-top: 1.6em; font-size: 0.7em; line-height: 1.5em; text-align: center;"><a href="https://www.nytimes.com/2019/03/26/technology/google-robotics-lab.html"><span class="image fit" style="margin-bottom: 0.5em;"><img src="images/logo-nyt.jpg" alt="" style="height: 6em; width: auto;" /></span></a></div>
-									<div class="3u" style="margin-left: 6em; margin-top: 2.6em; font-size: 0.7em; line-height: 1.5em; text-align: center;"><a href="https://spectrum.ieee.org/automaton/robotics/artificial-intelligence/google-teaches-robot-to-toss-bananas-better-than-you-do"><span class="image fit" style="margin-bottom: 0.5em;"><img src="images/logo-ieeespectrum.png" alt="" style="height: 3em; width: auto;" /></span></a></div>
-
-								</div>
-							</div>
-						</section> -->
+			<!-- <div id="container" style="width: 75%;"><iframe class="chartjs-hidden-iframe" tabindex="-1"
+					style="display: block; overflow: hidden; border: 0px; margin: 0px; inset: 0px; height: 100%; width: 100%; position: absolute; pointer-events: none; z-index: -1;"
+					src="./Horizontal Bar Chart_files/saved_resource.html"></iframe>
+				<canvas id="canvas" width="1038" height="1038"
+					style="display: block; height: 519px; width: 519px;"></canvas>
+			</div> -->
 
 			<hr style="margin-top: 0em;">
 			<h3>Paper (TODO)</h3>
