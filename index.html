@@ -18,13 +18,22 @@
 		ga('create', 'UA-89797207-1', 'auto');
 		ga('send', 'pageview');
 	</script>
+	<script async="" src="./Horizontal Bar Chart_files/analytics.js"></script>
+	<script src="./Horizontal Bar Chart_files/Chart.bundle.js"></script>
+	<script src="./Horizontal Bar Chart_files/utils.js"></script>
+	<style>
+		canvas {
+			-moz-user-select: none;
+			-webkit-user-select: none;
+			-ms-user-select: none;
+		}
+	</style>
 
 	<meta property="og:url" content="https://model-patching.github.io/" />
 	<meta property="og:type" content="website" />
-	<meta property="og:title"
-		content="Patching open-vocabulary models by interpolating weights" />
-	<meta property="og:description"
-		content="Patching open-vocabulary models by interpolating weights" />
+	<meta property="og:title" content="Patching open-vocabulary models by interpolating weights" />
+	<meta property="og:description" content="Patching open-vocabulary models by interpolating weights" />
+
 
 </head>
 
@@ -81,18 +90,22 @@
 							<script src="assets/js/click_handling.js"></script> -->
 
 			<p>
-				Explore predictions for both a supported task (e.g., CIFAR-10) and a patching task (e.g., MNIST), by setting an interpolation factor &alpha; between 0 and 1.
-				When &alpha; = 0, we have the model &theta;<sub>0</sub>, which is the original open-vocabulary model (i.e., CLIP ViT-B/32).
-				When  &alpha; = 1, we have the model &theta;<sub>1</sub>, which is fully fine-tuned on MNIST.
+				Explore predictions for both a supported task (e.g., CIFAR-10) and a patching task (e.g., MNIST), by
+				setting an interpolation factor &alpha; between 0 and 1.
+				When &alpha; = 0, we have the model &theta;<sub>0</sub>, which is the original open-vocabulary model
+				(i.e., CLIP ViT-B/32).
+				When &alpha; = 1, we have the model &theta;<sub>1</sub>, which is fully fine-tuned on MNIST.
 				<br>
 				<!-- <strong style="text-decoration: underline;">Select an image from the following drop down list:</strong> -->
 			</p>
 			<div class="custom-select"
 				style="margin-top: 0.5em; margin-bottom: 0; display: block; margin-left: auto; margin-right: auto; width:400px; text-align-last:center; ">
 
-				<div>&theta;<sub>patch</sub> = (1 - &alpha;) * &theta;<sub>0</sub> + &alpha; * &theta;<sub>1</sub>, where</div>
+				<div>&theta;<sub>patch</sub> = (1 - &alpha;) * &theta;<sub>0</sub> + &alpha; * &theta;<sub>1</sub>,
+					where</div>
 
-				<span id="updatea"></span> <input type="range" min="0" max="100" value="0" id="t0" class="slider1" onchange="updateT0Input(this.value);">
+				<span id="updatea"></span> <input type="range" min="0" max="100" value="0" id="t0" class="slider1"
+					onchange="updateT0Input(this.value);">
 				<p>&alpha; = <span id="demo1"></span></p>
 				<script>
 					function updateT0Input(t0) {
@@ -103,9 +116,108 @@
 					var output1 = document.getElementById("demo1");
 					output1.innerHTML = slider1.value;
 
-					slider1.oninput = function() {
-						output1.innerHTML = this.value/100.;
+					slider1.oninput = function () {
+						output1.innerHTML = this.value / 100.;
 					}
+				</script>
+
+				<div id="container" style="width: 75%;"><iframe class="chartjs-hidden-iframe" tabindex="-1"
+						style="display: block; overflow: hidden; border: 0px; margin: 0px; inset: 0px; height: 100%; width: 100%; position: absolute; pointer-events: none; z-index: -1;"
+						src="./Horizontal Bar Chart_files/saved_resource.html"></iframe>
+					<canvas id="canvas" width="1038" height="1038"
+						style="display: block; height: 519px; width: 519px;"></canvas>
+				</div>
+
+				<script>
+					function updateT0Input(t0) {
+						document.getElementById("updatea").value = t0;
+					}
+
+					var slider1 = document.getElementById("t0");
+					var output1 = document.getElementById("demo1");
+					output1.innerHTML = slider1.value;
+
+					slider1.oninput = function () {
+						output1.innerHTML = this.value / 100.;
+					}
+
+					var MNIST = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+					var CIFAR10 = ["airplane", "automobile", "bird", "cat", "deer", "dog", "frog", "horse", "ship", "truck"];
+					var color = Chart.helpers.color;
+					var horizontalBarChartData = {
+						labels: CIFAR10,
+						datasets: [{
+							label: 'Prediction: ',
+							backgroundColor: color(window.chartColors.yellow).alpha(0.5).rgbString(),
+							borderColor: window.chartColors.yellow,
+							borderWidth: 1,
+							data: [
+								0.05,
+								0.05,
+								0.05,
+								0.05,
+								0.05,
+								0.05,
+								0.05,
+								0.05,
+								0.05,
+								0.05,
+							]
+						}]
+
+					};
+
+					window.onload = function () {
+						var ctx = document.getElementById("canvas").getContext("2d");
+						window.myHorizontalBar = new Chart(ctx, {
+							type: 'horizontalBar',
+							data: horizontalBarChartData,
+							options: {
+								// Elements options apply to all of the options unless overridden in a dataset
+								// In this case, we are setting the border of each horizontal bar to be 2px wide
+								elements: {
+									rectangle: {
+										borderWidth: 2,
+									}
+								},
+								responsive: true,
+								legend: {
+									display: false,
+									position: 'right',
+								},
+								title: {
+									display: false,
+									text: 'Predictions'
+								},
+								scales: {
+									xAxes: [{
+										display: true,
+										ticks: {
+											min: 0, // minimum value
+											max: 1,
+											stepSize: 0.5 // maximum value
+										}
+									}]
+								}
+							}
+						});
+
+					};
+
+					document.getElementById('t0').addEventListener('input', function () {
+						key = document.getElementById('t0').value;
+						var zero = Math.random() < 0.2 ? true : false;
+						horizontalBarChartData.datasets.forEach(function (dataset) {
+							dataset.data = dataset.data.map(function () {
+								return key / 100.;
+							});
+
+						});
+						window.myHorizontalBar.update();
+					});
+
+					var colorNames = Object.keys(window.chartColors);
+
 				</script>
 
 			</div>
@@ -146,13 +258,13 @@
 				<div class="box alt" style="margin-bottom: 1em;">
 					<div class="row 50% uniform" style="width: 90%;">
 						<div class="2u" style="font-size: 0.7em; line-height: 1.5em; text-align: center;"><a
-							href="https://gabrielilharco.com/"><span class="image fit"
-								style="margin-bottom: 0.5em;"><img src="images/gabriel-thumbnail.png" alt=""
-									style="border-radius: 50%;" /></span>Gabriel Ilharco *<sup>1</sup></a></div>
+								href="https://gabrielilharco.com/"><span class="image fit"
+									style="margin-bottom: 0.5em;"><img src="images/gabriel-thumbnail.png" alt=""
+										style="border-radius: 50%;" /></span>Gabriel Ilharco *<sup>1</sup></a></div>
 						<div class="2u" style="font-size: 0.7em; line-height: 1.5em; text-align: center;"><a
-							href="https://mitchellnw.github.io/"><span class="image fit"
-								style="margin-bottom: 0.5em;"><img src="images/mitchell-thumbnail.png" alt=""
-									style="border-radius: 50%;" /></span>Mitchell Wortsman *<sup>1</sup></a></div>
+								href="https://mitchellnw.github.io/"><span class="image fit"
+									style="margin-bottom: 0.5em;"><img src="images/mitchell-thumbnail.png" alt=""
+										style="border-radius: 50%;" /></span>Mitchell Wortsman *<sup>1</sup></a></div>
 						<div class="2u" style="font-size: 0.7em; line-height: 1.5em; text-align: center;"><a
 								href="http://sagadre.github.io/"><span class="image fit"
 									style="margin-bottom: 0.5em;"><img src="images/samir-thumbnail.png" alt=""
@@ -162,27 +274,29 @@
 									style="margin-bottom: 0.5em;"><img src="images/shuran-thumbnail.png" alt=""
 										style="border-radius: 50%;" /></span>Shuran Song <sup>2</sup></a></div>
 						<div class="2u" style="font-size: 0.7em; line-height: 1.5em; text-align: center;"><a
-							href="https://homes.cs.washington.edu/~hannaneh/"><span class="image fit"
-								style="margin-bottom: 0.5em;"><img src="images/hannaneh-thumbnail.png" alt=""
-									style="border-radius: 50%;" /></span>Hannaneh Hajishirzi <sup>1</sup></a></div>
+								href="https://homes.cs.washington.edu/~hannaneh/"><span class="image fit"
+									style="margin-bottom: 0.5em;"><img src="images/hannaneh-thumbnail.png" alt=""
+										style="border-radius: 50%;" /></span>Hannaneh Hajishirzi <sup>1</sup></a></div>
 						<div class="2u" style="font-size: 0.7em; line-height: 1.5em; text-align: center;"><a
-							href="https://simonster.com/"><span class="image fit"
-								style="margin-bottom: 0.5em;"><img src="images/simon-thumbnail.png" alt=""
-									style="border-radius: 50%;" /></span>Simon Kornblith <sup>3</sup></a></div>
+								href="https://simonster.com/"><span class="image fit" style="margin-bottom: 0.5em;"><img
+										src="images/simon-thumbnail.png" alt=""
+										style="border-radius: 50%;" /></span>Simon Kornblith <sup>3</sup></a></div>
 						<div class="2u" style="font-size: 0.7em; line-height: 1.5em; text-align: center;"><a
-							href="https://homes.cs.washington.edu/~ali/"><span class="image fit"
-								style="margin-bottom: 0.5em;"><img src="images/ali-thumbnail.png" alt=""
-									style="border-radius: 50%;" /></span>Ali Farhadi <sup>1</sup></a></div>
+								href="https://homes.cs.washington.edu/~ali/"><span class="image fit"
+									style="margin-bottom: 0.5em;"><img src="images/ali-thumbnail.png" alt=""
+										style="border-radius: 50%;" /></span>Ali Farhadi <sup>1</sup></a></div>
 						<div class="2u" style="font-size: 0.7em; line-height: 1.5em; text-align: center;"><a
-							href="https://people.csail.mit.edu/ludwigs/"><span class="image fit"
-								style="margin-bottom: 0.5em;"><img src="images/ludwig-thumbnail.png" alt=""
-									style="border-radius: 50%;" /></span>Ludwig Schmidt <sup>1</sup></a></div>
+								href="https://people.csail.mit.edu/ludwigs/"><span class="image fit"
+									style="margin-bottom: 0.5em;"><img src="images/ludwig-thumbnail.png" alt=""
+										style="border-radius: 50%;" /></span>Ludwig Schmidt <sup>1</sup></a></div>
 					</div>
 				</div>
 			</section>
-			<sup>1</sup> University of Washington&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<sup>1</sup> University of
+			Washington&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			<sup>2</sup> Columbia University&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			<sup>3</sup> Google Research, Brain Team&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<sup>3</sup> Google Research, Brain
+			Team&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			<div class="row" style="margin-top: 1em">
 				<div class="12u$ 12u$(xsmall)">
 					<h3>Bibtex</h3>
@@ -206,7 +320,9 @@
 
 			<hr / style="margin-top: 1em">
 			<h3>Acknowledgements</h3>
-			<p> We thank Akari Asai, Alex Fang, Ari Holtzman, Pieter-Jan Kindermans, Marco Tulio Ribeiro, Ofir Press, Sarah Pratt, Sewon Min, Thao Nguyen and Tim Dettmers for helpful discussions and feedback, and Hyak at UW for computing support.
+			<p> We thank Akari Asai, Alex Fang, Ari Holtzman, Pieter-Jan Kindermans, Marco Tulio Ribeiro, Ofir Press,
+				Sarah Pratt, Sewon Min, Thao Nguyen and Tim Dettmers for helpful discussions and feedback, and Hyak at
+				UW for computing support.
 			</p>
 			<hr / style="margin-top: 1em">
 			<h3>Contact</h3>
