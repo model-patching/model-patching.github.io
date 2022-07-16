@@ -16,7 +16,7 @@ data = {}
 
 for json_str in json_list:
     result = json.loads(json_str)
-    alpha_100 = int(result['alpha'] * 100)
+    alpha_100 = int(round(result['alpha'] * 100))
     if alpha_100 not in data:
         data[alpha_100] = {}
     data[alpha_100][mapping[result["exp_name"]]] = result[f'{result["exp_name"]}:top1']
